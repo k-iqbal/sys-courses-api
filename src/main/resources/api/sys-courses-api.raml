@@ -1,0 +1,89 @@
+#%RAML 1.0
+title: sys-courses-api
+
+version: v1
+baseUri: https://api.mycompany.com/api/{version}
+mediaType: application/json
+
+types:
+  Course: !include dataTypes/course.raml
+  CourseRequest: !include dataTypes/courseRequest.raml
+  ErrorResponse: !include dataTypes/errorResponse.raml
+
+/courses:
+
+  get:
+    description: Retrieve all courses
+    responses:
+      200:
+        body:
+          application/json:
+            type: Course[]
+            example: !include examples/courses-example.json
+
+  post:
+    description: Add a new course
+    body:
+      application/json:
+        type: CourseRequest
+        example: !include examples/course-request-example.json
+    responses:
+      201:
+        body:
+          application/json:
+            type: Course
+            example: !include examples/course-example.json
+      400:
+        body:
+          application/json:
+            type: ErrorResponse
+            example: !include examples/error-example.json
+
+  /{courseId}:
+    uriParameters:
+      courseId:
+        type: integer
+        required: true
+
+    get:
+      description: Get course by ID
+      responses:
+        200:
+          body:
+            application/json:
+              type: Course
+              example: !include examples/course-example.json
+        404:
+          body:
+            application/json:
+              type: ErrorResponse
+              example: !include examples/error-example.json
+
+    put:
+      description: Update a course
+      body:
+        application/json:
+          type: CourseRequest
+          example: !include examples/course-request-example.json
+      responses:
+        200:
+          body:
+            application/json:
+              type: Course
+              example: !include examples/course-example.json
+        404:
+          body:
+            application/json:
+              type: ErrorResponse
+              example: !include examples/error-example.json
+
+    delete:
+      description: Delete a course
+      responses:
+        204:
+          description: Course deleted successfully
+        404:
+          body:
+            application/json:
+              type: ErrorResponse
+              example: !include examples/error-example.json

@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="courses" format="json">
+      <types:shape format="weave" example="api/examples/courses-example.json"><![CDATA[%dw 2.0
+
+type courses = Array<{|  id: Number {"typeId": "int"},   name: String,   description: String,   duration: Number {"typeId": "int"},   price: Number {"typeId": "double"}|}> {"example": "[{\\\"id\\\":101,\\\"name\\\":\\\"MuleSoft Fundamentals\\\",\\\"description\\\":\\\"Intro course\\\",\\\"duration\\\":40,\\\"price\\\":499.99},{\\\"id\\\":102,\\\"name\\\":\\\"Advanced Mule\\\",\\\"description\\\":\\\"Deep dive\\\",\\\"duration\\\":32,\\\"price\\\":599.99}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#99108006-0c5e-45ed-835d-7966369c0b4e">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="courses"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

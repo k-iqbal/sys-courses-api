@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="4cab656f-351b-4141-bc4a-eaad9b39bc2f" >
+		<db:mssql-connection host="localhost" port="1433" user="sa" password="test123" databaseName="course-db" />
+	</db:config>
+	<flow name="sys-courses-api-implFlow" doc:id="bbc55a6f-ec64-486c-abec-f8090ec92809" >
+		<http:listener doc:name="Listener" doc:id="b3a3edd6-ec12-453a-a9cb-fbc93f044510" config-ref="sys-courses-api-httpListenerConfig" path="/get-courses"/>
+		<logger level="INFO" doc:name="Get courses detail from database" doc:id="e0076f90-46f3-4d22-a44e-f68f89d6bb7f" message="Get courses detail from database"/>
+		<db:select doc:name="Course DB" doc:id="bbb31d14-fa5e-477a-a555-b6dfebb43d8d" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT Id, Name, Description, Duration, Price ,CreatedAt,UpdatedAt
+  FROM Courses]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="99108006-0c5e-45ed-835d-7966369c0b4e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	c_id: payload01.Id,
+	c_name: payload01.Name,
+	c_description: payload01.Description default "",
+	c_duration: payload01.Duration default 0,
+	c_price: payload01.Price default 0
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Print courses detail" doc:id="1262ae24-512b-4e62-8372-ffbaeeab09e3" message="#[payload]"/>
+	</flow>
+</mule>

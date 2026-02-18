@@ -1,0 +1,16 @@
+[
+  {
+    "id": 101,
+    "name": "MuleSoft Fundamentals",
+    "description": "Intro course",
+    "duration": 40,
+    "price": 499.99
+  },
+  {
+    "id": 102,
+    "name": "Advanced Mule",
+    "description": "Deep dive",
+    "duration": 32,
+    "price": 599.99
+  }
+]
