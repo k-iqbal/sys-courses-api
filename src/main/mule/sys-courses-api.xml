@@ -166,7 +166,8 @@ output application/json
         </ee:transform>
     </flow>
     <flow name="get:\courses:sys-courses-api-config">
-        <ee:transform doc:name="Transform Message">
+        <flow-ref doc:name="Flow Reference" doc:id="7153f560-7fee-410c-9046-df33d9ccef7a" name="get:\courses\sys-courses-api-implFlow"/>
+		<ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json

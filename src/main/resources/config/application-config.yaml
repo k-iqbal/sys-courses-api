@@ -1,0 +1,6 @@
+database:
+  host: "localhost"
+  port: "1433"
+  user: "sa"  
+API:
+  id: "20749484"
