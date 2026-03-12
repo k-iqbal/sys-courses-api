@@ -2,5 +2,6 @@
   "name": "API Design with RAML",
   "description": "Learn RAML specification",
   "duration": 24,
-  "price": 299.99
+  "price": 299.99,
+  "enrollment_year": 2000
 }

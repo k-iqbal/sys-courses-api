@@ -167,29 +167,6 @@ output application/json
     </flow>
     <flow name="get:\courses:sys-courses-api-config">
         <flow-ref doc:name="Flow Reference" doc:id="7153f560-7fee-410c-9046-df33d9ccef7a" name="get:\courses\sys-courses-api-implFlow"/>
-		<ee:transform doc:name="Transform Message">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-[
-  {
-    id: 101,
-    name: "MuleSoft Fundamentals",
-    description: "Intro course",
-    duration: 40,
-    price: 499.99
-  }, 
-  {
-    id: 102,
-    name: "Advanced Mule",
-    description: "Deep dive",
-    duration: 32,
-    price: 599.99
-  }
-] as Array {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
     </flow>
     <flow name="get:\courses\(courseId):sys-courses-api-config">
         <ee:transform doc:name="Transform Message">

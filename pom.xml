@@ -4,7 +4,7 @@
 
 	<groupId>3d68e9c2-2df8-4a79-b986-e39da34424b0</groupId>
 	<artifactId>sys-courses-api-app</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.5</version>
 	<packaging>mule-application</packaging>
 
 	<name>sys-courses-api-app</name>
@@ -40,7 +40,7 @@
 						<server>anypoint-exchange-v3</server>
 						<applicationName>${app.name}</applicationName>
 						<replicas>1</replicas>
-						<vCores>1</vCores>
+						<vCores>0.1</vCores>
 					</cloudhub2Deployment>
 					<sharedLibraries>
 						<sharedLibrary>
@@ -89,6 +89,12 @@
 			<version>1.3.0</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
+		<dependency>
+			<groupId>org.mule.connectors</groupId>
+			<artifactId>mule-objectstore-connector</artifactId>
+			<version>1.2.5</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
 	</dependencies>
 
 	<repositories>
@@ -121,7 +127,7 @@
 		<repository>
 			<id>anypoint-exchange-v3</id>
 			<name>Corporate Repository</name>
-			<url>https://maven.anypoint.mulesoft.com/api/v3/organizations/${groupId}/maven</url>
+			<url>https://maven.anypoint.mulesoft.com/api/v3/organizations/${project.groupId}/maven</url>
 			<layout>default</layout>
 		</repository>
 	</distributionManagement>
