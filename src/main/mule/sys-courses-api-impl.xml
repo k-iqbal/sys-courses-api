@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="4cab656f-351b-4141-bc4a-eaad9b39bc2f" >
 		<db:mssql-connection host="${database.host}" port="${database.port}" user="${database.user}" password="${database.password}" databaseName="course-db" />
 	</db:config>
 	<configuration-properties doc:name="Configuration properties" doc:id="a014f039-9189-4b43-b1df-644940d28bdc" file="config\application-config.yaml" />
 	<api-gateway:autodiscovery ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="1361a9ef-ca1e-4466-8c80-5726e06bddd0" flowRef="get:\courses:sys-courses-api-config" apiId="${API.id}"/>
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="7cec1d3d-5ced-4a60-ba70-146e0edf0015" entryTtl="55" entryTtlUnit="MINUTES" expirationInterval="5" />
+	<http:request-config name="HTTP_Request_config" doc:name="HTTP Request config" doc:id="90743923-4a8d-4bc6-8000-d2bb0ce19216" />
 	<flow name="get:\courses\sys-courses-api-implFlow" doc:id="bbc55a6f-ec64-486c-abec-f8090ec92809" >
 		<http:listener doc:name="Listener" doc:id="b3a3edd6-ec12-453a-a9cb-fbc93f044510" config-ref="sys-courses-api-httpListenerConfig" path="/get-courses"/>
 		<logger level="INFO" doc:name="Get courses detail from database" doc:id="e0076f90-46f3-4d22-a44e-f68f89d6bb7f" message="Get courses detail from database"/>
@@ -19,7 +22,7 @@ http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/m
 		<choice doc:name="Choice" doc:id="fda99cce-768b-4817-bbd2-5fe2807cd1fc" >
 			<when expression='#[vars.action == "db"]'>
 				<db:select doc:name="Course DB" doc:id="bbb31d14-fa5e-477a-a555-b6dfebb43d8d" config-ref="Database_Config">
-			<db:sql><![CDATA[SELECT Id, Name, Description, Duration, Price ,CreatedAt,UpdatedAt
+			<db:sql><![CDATA[SELECT Id, Name, Description, Duration, Price ,Enrollment_Year, CreatedAt,UpdatedAt
   FROM Courses]]></db:sql>
 		</db:select>
 				<ee:transform doc:name="Transform Message" doc:id="99108006-0c5e-45ed-835d-7966369c0b4e">
@@ -32,13 +35,15 @@ payload map ( payload01 , indexOfPayload01 ) -> {
 	c_name: payload01.Name,
 	c_description: payload01.Description default "",
 	c_duration: payload01.Duration default 0,
-	c_price: payload01.Price default 0
+	c_price: payload01.Price default 0,
+	c_enrollment_year: payload01.Enrollment_Year default 9999
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 			</when>
 			<otherwise >
-				<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;&#10;[&#10;    {&#10;        "c_id": 101,&#10;        "c_name": "MuleSoft Fundamentals",&#10;        "c_description": "Introduction to Mule 4",&#10;        "c_duration": 40,&#10;        "c_price": 499.99&#10;    },&#10;    {&#10;        "c_id": 102,&#10;        "c_name": "API Design with RAML",&#10;        "c_description": "Learn to design APIs using RAML",&#10;        "c_duration": 24,&#10;        "c_price": 299.99&#10;    }&#10;]]' doc:name="Set Payload" doc:id="d018b07b-d1d4-4aad-a6f6-a24f687ce8b5" />
+				<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;&#10;[&#10;    {&#10;        "c_id": 101,&#10;        "c_name": "MuleSoft Fundamentals",&#10;        "c_description": "Introduction to Mule 4",&#10;        "c_duration": 40,&#10;        "c_price": 499.99,&#10;        "c_enrollment_year": 2000&#10;    },&#10;    {&#10;        "c_id": 102,&#10;        "c_name": "API Design with RAML",&#10;        "c_description": "Learn to design APIs using RAML",&#10;        "c_duration": 24,&#10;        "c_price": 299.99,&#10;        "c_enrollment_year": 1999&#10;    }&#10;]]' doc:name="Set Payload" doc:id="d018b07b-d1d4-4aad-a6f6-a24f687ce8b5" />
+				<logger level="INFO" doc:name="Logger" doc:id="f37c05be-aa0d-49dd-a0ab-03e65cc86802" message="I am running in DEFAULT CHOICE"/>
 			</otherwise>
 		</choice>
 		<logger level="INFO" doc:name="Print courses detail" doc:id="1262ae24-512b-4e62-8372-ffbaeeab09e3" message="#[payload]"/>
