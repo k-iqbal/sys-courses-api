@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>3d68e9c2-2df8-4a79-b986-e39da34424b0</groupId>
+	<groupId>626ae767-0092-4650-bdfb-520ae3825da9</groupId>
 	<artifactId>sys-courses-api-app</artifactId>
-	<version>1.0.5</version>
+	<version>1.0.4</version>
 	<packaging>mule-application</packaging>
 
 	<name>sys-courses-api-app</name>
